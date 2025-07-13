@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Age Calculator</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-100">
+
+    <main class="min-h-screen w-full flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl p-6 md:p-10 transform transition-all">
+            
+            <header class="text-center mb-6">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800">Age Calculator</h1>
+                <p class="text-slate-500 mt-2">Find out your age in every detail.</p>
+            </header>
+            
+            <div class="space-y-6">
+                <div>
+                    <label for="dob" class="block text-sm font-medium text-slate-600 mb-2">Enter your Date of Birth</label>
+                    <input type="date" id="dob" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                </div>
+                
+                <div id="error-message" class="hidden text-center p-3 bg-red-100 text-red-700 rounded-lg">
+                    <p>Date of birth cannot be in the future. Please select a valid date.</p>
+                </div>
+
+                <div id="results-container" class="hidden animate-fade-in">
+                    <hr class="my-6 border-slate-200">
+                    <div class="text-center mb-6">
+                        <p class="text-slate-600 text-lg">Your age is</p>
+                        <p class="text-2xl md:text-3xl font-bold text-indigo-600 tracking-tight">
+                            <span id="years">--</span> Years, 
+                            <span id="months">--</span> Months, & 
+                            <span id="days">--</span> Days
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Months</p>
+                            <p id="total-months" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Weeks</p>
+                            <p id="total-weeks" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                         <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Days</p>
+                            <p id="total-days" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Hours</p>
+                            <p id="total-hours" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Minutes</p>
+                            <p id="total-minutes" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Seconds</p>
+                            <p id="total-seconds" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+    <!-- External JavaScript File -->
+    <script src="script.js"></script>
+</body>
+</html>
