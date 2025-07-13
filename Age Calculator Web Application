@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Age Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Modern Neutral with Indigo Accent -->
+    <!-- Application Structure Plan: A single-card, task-focused design was chosen for maximum usability. The application presents a single clear task (select a date) and provides immediate, real-time feedback. This structure eliminates unnecessary steps, reduces cognitive load, and provides a direct, intuitive user flow (Input -> Instant Output). The layout uses a responsive card that centers on all screen sizes, ensuring a consistent and accessible experience. -->
+    <!-- Visualization & Content Choices: The core information is the calculated age. Goal: Inform (Primary Age). Presentation: Large, bold text for the summary (Years, Months, Days) for immediate clarity. Interaction: None, it's a direct display. Justification: This is the primary user goal and must be prominent. Goal: Inform (Detailed Breakdown). Presentation: A 2-column grid of key-value pairs (Total Years, etc.) provides scannable, secondary information without cluttering the main result. Interaction: None. Justification: Offers deeper data context in an organized manner. Library/Method: All logic is handled with vanilla JavaScript for lightweight performance and DOM manipulation. No charts or complex visualizations are needed for this data type. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the date input to ensure consistency */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            filter: invert(0.5) sepia(0.6) saturate(2) hue-rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <main class="min-h-screen w-full flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl p-6 md:p-10 transform transition-all">
+            
+            <header class="text-center mb-6">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800">Age Calculator</h1>
+                <p class="text-slate-500 mt-2">Find out your age in every detail.</p>
+            </header>
+            
+            <div class="space-y-6">
+                <div>
+                    <label for="dob" class="block text-sm font-medium text-slate-600 mb-2">Enter your Date of Birth</label>
+                    <input type="date" id="dob" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                </div>
+                
+                <div id="error-message" class="hidden text-center p-3 bg-red-100 text-red-700 rounded-lg">
+                    <p>Date of birth cannot be in the future. Please select a valid date.</p>
+                </div>
+
+                <div id="results-container" class="hidden animate-fade-in">
+                    <hr class="my-6 border-slate-200">
+                    <div class="text-center mb-6">
+                        <p class="text-slate-600 text-lg">Your age is</p>
+                        <p class="text-2xl md:text-3xl font-bold text-indigo-600 tracking-tight">
+                            <span id="years">--</span> Years, 
+                            <span id="months">--</span> Months, & 
+                            <span id="days">--</span> Days
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Months</p>
+                            <p id="total-months" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Weeks</p>
+                            <p id="total-weeks" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                         <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Days</p>
+                            <p id="total-days" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Hours</p>
+                            <p id="total-hours" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Minutes</p>
+                            <p id="total-minutes" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-500 font-medium">Total Seconds</p>
+                            <p id="total-seconds" class="text-xl font-semibold text-slate-800">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+    <script>
+        const dobInput = document.getElementById('dob');
+        
+        const yearsSpan = document.getElementById('years');
+        const monthsSpan = document.getElementById('months');
+        const daysSpan = document.getElementById('days');
+
+        const totalMonthsSpan = document.getElementById('total-months');
+        const totalWeeksSpan = document.getElementById('total-weeks');
+        const totalDaysSpan = document.getElementById('total-days');
+        const totalHoursSpan = document.getElementById('total-hours');
+        const totalMinutesSpan = document.getElementById('total-minutes');
+        const totalSecondsSpan = document.getElementById('total-seconds');
+        
+        const resultsContainer = document.getElementById('results-container');
+        const errorMessage = document.getElementById('error-message');
+
+        function calculateAge() {
+            const dobValue = dobInput.value;
+            if (!dobValue) {
+                resetUI();
+                return;
+            }
+
+            const birthDate = new Date(dobValue);
+            const today = new Date();
+
+            if (birthDate > today) {
+                showError();
+                return;
+            }
+
+            hideError();
+            
+            // Core age calculation (Years, Months, Days)
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += lastMonth.getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            yearsSpan.textContent = years;
+            monthsSpan.textContent = months;
+            daysSpan.textContent = days;
+            
+            // Detailed breakdown calculation
+            const diffInMs = today.getTime() - birthDate.getTime();
+            const diffInSeconds = diffInMs / 1000;
+            const diffInMinutes = diffInSeconds / 60;
+            const diffInHours = diffInMinutes / 60;
+            const diffInDays = diffInHours / 24;
+
+            const totalMonths = years * 12 + months;
+            const totalWeeks = Math.floor(diffInDays / 7);
+
+            totalMonthsSpan.textContent = totalMonths.toLocaleString();
+            totalWeeksSpan.textContent = totalWeeks.toLocaleString();
+            totalDaysSpan.textContent = Math.floor(diffInDays).toLocaleString();
+            totalHoursSpan.textContent = Math.floor(diffInHours).toLocaleString();
+            totalMinutesSpan.textContent = Math.floor(diffInMinutes).toLocaleString();
+            totalSecondsSpan.textContent = Math.floor(diffInSeconds).toLocaleString();
+            
+            resultsContainer.classList.remove('hidden');
+        }
+
+        function resetUI() {
+            resultsContainer.classList.add('hidden');
+            hideError();
+            const defaultText = '--';
+            yearsSpan.textContent = defaultText;
+            monthsSpan.textContent = defaultText;
+            daysSpan.textContent = defaultText;
+            totalMonthsSpan.textContent = defaultText;
+            totalWeeksSpan.textContent = defaultText;
+            totalDaysSpan.textContent = defaultText;
+            totalHoursSpan.textContent = defaultText;
+            totalMinutesSpan.textContent = defaultText;
+            totalSecondsSpan.textContent = defaultText;
+        }
+
+        function showError() {
+            resultsContainer.classList.add('hidden');
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+
+        dobInput.addEventListener('input', calculateAge);
+    </script>
+</body>
+</html>
