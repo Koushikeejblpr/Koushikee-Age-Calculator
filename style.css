@@ -1,0 +1,10 @@
+/* Sets the font for the entire application */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Custom styles for the date input's calendar icon to ensure consistency */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.5) sepia(0.6) saturate(2) hue-rotate(180deg);
+}
